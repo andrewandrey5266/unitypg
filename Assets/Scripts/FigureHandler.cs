@@ -8,15 +8,22 @@ public class FigureHandler : MonoBehaviour
     public static float ZStep = -0.00001f;
     private static float _highestZ = ZStep * 10;
     
+    //#hardcode
     const int LowerBoundX = -2;
-    const int HigherBoundX = 5;
-
+    const int HigherBoundX = 6;
     const int LowerBoundY = -6;
-    const int HigherBoundY = 9;
+    const int HigherBoundY = 10;
 
-    
     private Vector3 mOffset;
     private float mZCoord;
+
+    private MeshCollider collider;
+
+    private void Start()
+    {
+        collider = gameObject.GetComponent<MeshCollider>();
+    }
+
     void OnMouseDown()
     {
         GameManager.FigureUpAudio.Play(0);
@@ -126,9 +133,19 @@ public class FigureHandler : MonoBehaviour
 
     private Vector3 GetBoundedPosition(Vector3 position)
     {
+        var size = collider.bounds.size;
+
         return new Vector3(
-            position.x >= LowerBoundX ? position.x <= HigherBoundX ? position.x : HigherBoundX : LowerBoundX,
-            position.y >= LowerBoundY ? position.y <= HigherBoundY ? position.y : HigherBoundY : LowerBoundY,
+            position.x >= LowerBoundX
+                ? (position.x + size.x) <= HigherBoundX
+                    ? position.x
+                    : HigherBoundX - size.x
+                : LowerBoundX,
+            position.y >= LowerBoundY
+                ? (position.y + size.y) <= HigherBoundY
+                    ? position.y
+                    : HigherBoundY - size.y 
+                : LowerBoundY,
             position.z);
     }
 }
