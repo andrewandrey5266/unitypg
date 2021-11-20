@@ -10,12 +10,21 @@ public class ButtonHandler : MonoBehaviour
             .FindObjectsOfTypeAll<Text>()
             .First(x => x.CompareTag($"levelCompletedText"))
             .gameObject.SetActive(false);
-        gameObject.SetActive(false);
+
+        var menu = GameObject.FindGameObjectWithTag("menu");
+        if (menu != null && menu.activeSelf)
+        {
+            GameObject.FindGameObjectWithTag("menu").SetActive(false);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+        
         GameManager.ButtonClickAudio.Play(0);
 
         if (GameManager.IsFirstGame)
         {
-            gameObject.GetComponentInChildren<Text>().text = "n e x t  l e v e l";
             GameManager.IsFirstGame = false;
             Resources
                 .FindObjectsOfTypeAll<Text>()
