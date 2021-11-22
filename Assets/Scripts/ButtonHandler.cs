@@ -11,28 +11,34 @@ public class ButtonHandler : MonoBehaviour
             .First(x => x.CompareTag($"levelCompletedText"))
             .gameObject.SetActive(false);
 
-        var menu = GameObject.FindGameObjectWithTag("menu");
-        if (menu != null && menu.activeSelf)
-        {
-            GameObject.FindGameObjectWithTag("menu").SetActive(false);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
+        gameObject.SetActive(false);
         
         GameManager.ButtonClickAudio.Play(0);
 
-        if (GameManager.IsFirstGame)
-        {
-            GameManager.IsFirstGame = false;
-            Resources
-                .FindObjectsOfTypeAll<Text>()
-                .First(x => x.CompareTag($"welcomeText"))
-                .gameObject.SetActive(false);
-        }
-        
-        
+        var script = GameObject.Find("Generator").GetComponent<FiguresGenerator>();
+        script.Generate();
+        GameManager.StartLevel();
+    }
+
+    public void GenerateRegular()
+    {
+        GameManager.IsLevelHardnessAdjustable = false;
+        GameManager.DoEasy();
+        MenuButtonBase();
+    }
+
+    public void GenerateHard()
+    {
+        GameManager.IsLevelHardnessAdjustable = false;
+        GameManager.DoExpert();
+        MenuButtonBase();
+    }
+
+    private void MenuButtonBase()
+    {
+        GameManager.Menu.SetActive(false);
+        GameManager.HomeButton.SetActive(true);
+        GameManager.ButtonClickAudio.Play(0);
         var script = GameObject.Find("Generator").GetComponent<FiguresGenerator>();
         script.Generate();
         GameManager.StartLevel();

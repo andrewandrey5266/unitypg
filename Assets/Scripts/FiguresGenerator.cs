@@ -4,12 +4,6 @@ using UnityEngine;
 
 public class FiguresGenerator : MonoBehaviour
 {
-	int xlength = 6; 
-	int ylength = 4;
-	int figureN = 8;
-	int minSize = 3;
-	public static int maxSize = 7;
-	
 	private readonly System.Random _rnd = new System.Random();
 
 	public void Generate()
@@ -17,9 +11,14 @@ public class FiguresGenerator : MonoBehaviour
 		Material[] mats = Resources.LoadAll("Materials/FigureColors", typeof(Material)).Cast<Material>().ToArray();
 		List<int> colorNs = Enumerable.Range(0, mats.Length).ToList();
 
-		int[,] figures = Generator.GetPuzzle(xlength, ylength, figureN, minSize, maxSize, out int resultFigureN);
+		int[,] figures = Generator.GetPuzzle(
+			GameManager.Settings.Xlength,
+			GameManager.Settings.Ylength,
+			GameManager.Settings.FigureN,
+			GameManager.Settings.MinSize,
+			GameManager.Settings.MaxSize, out int resultFigureN);
 
-		for (int i = 1; i <= figureN; i++)
+		for (int i = 1; i <= GameManager.Settings.FigureN; i++)
 		{
 			var oldGo = GameObject.Find($"Figure{i}");
 			DestroyImmediate(oldGo);
@@ -67,7 +66,7 @@ public class FiguresGenerator : MonoBehaviour
 				}
 			}
 			
-			go.transform.position = new Vector3(x, y, -0.0001f);
+			go.transform.position = new Vector3(x, y, -0.01f);
 			
 			x += cx;
 			

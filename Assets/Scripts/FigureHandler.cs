@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class FigureHandler : MonoBehaviour
 {
-    public static float ZStep = -0.00001f;
-    private static float _highestZ = ZStep * 10;
+    private static float ZStep = -0.005f;
+    private static float _highestZ = ZStep * 1;
+    public static void ResetZ() => _highestZ = ZStep * 1;
     
     //#hardcode
     const int LowerBoundX = -2;
