@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class FigureHandler : MonoBehaviour
 {
-    private static float ZStep = -0.001f;
+    private static float ZStep = 0.01f;
     
     //#hardcode
     const int LowerBoundX = -2;
@@ -25,18 +25,18 @@ public class FigureHandler : MonoBehaviour
 
     void OnMouseDown()
     {
-        GameManager.FigureUpAudio.Play(0);
-        if (GameManager.IsLevelCompleted())
+        if (GameManager.IsLevelCompleted)
         {
             return;
         }
+        GameManager.FigureUpAudio.Play(0);
         mZCoord = FindObjectOfType<Camera>().WorldToScreenPoint(transform.position).z;
         mOffset = transform.position - GetMouseAsWorldPoint();
         transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
     }
     void OnMouseUp()
     {
-        if (GameManager.IsLevelCompleted())
+        if (GameManager.IsLevelCompleted)
         {
             return;
         }
@@ -47,9 +47,7 @@ public class FigureHandler : MonoBehaviour
         float x = (float)Math.Round(roughVector.x);
         float y = (float)Math.Round(roughVector.y);
 
-        transform.position = GetBoundedPosition(new Vector3(x, y, ZStep * 10));
-        RearrangeFigures();
-            
+        transform.position = GetBoundedPosition(new Vector3(x, y, - ZStep * 10));
         GameManager.NumberOfMoves++;
         GameManager.TrackProgress();
         if (IsLevelCompleted())
@@ -61,11 +59,15 @@ public class FigureHandler : MonoBehaviour
             GameManager.LevelCompletedAudio.Play(0);
             GameManager.CompleteLevel();
         }
+        else
+        {
+            RearrangeFigures();
+        }
         
     }
     void OnMouseDrag()
     {
-        if (GameManager.IsLevelCompleted())
+        if (GameManager.IsLevelCompleted)
         {
             return;
         }
@@ -147,7 +149,7 @@ public class FigureHandler : MonoBehaviour
         for (int i = 0; i < orderedFigures.Count; i++)
         {
             var position = orderedFigures[i].transform.position;
-            orderedFigures[i].transform.position = new Vector3(position.x, position.y, ZStep * (i + 2));
+            orderedFigures[i].transform.position = new Vector3(position.x, position.y, -ZStep * (i + 2));
         }
     }
 }

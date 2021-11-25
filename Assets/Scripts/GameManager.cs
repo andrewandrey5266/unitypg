@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour
 	public static bool IsLevelHardnessAdjustable = true;
 	
 	 static bool levelCompleted = false;
-	 public static bool IsLevelCompleted() => levelCompleted;
+	 public static bool IsLevelCompleted => levelCompleted;
 
 	 public static GameObject Menu;
 	 public static GameObject HomeButton;
@@ -67,6 +67,9 @@ public class GameManager : MonoBehaviour
 		{
 			Settings.MaxSize = maxSize;
 		}
+		
+		//trying to disable multitouch here, to omit figure drawing but
+		Input.multiTouchEnabled = false;
 	}
 	
 

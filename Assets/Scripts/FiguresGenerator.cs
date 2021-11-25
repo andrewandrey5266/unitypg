@@ -28,7 +28,8 @@ public class FiguresGenerator : MonoBehaviour
 		var figuresParent = GameObject.Find("Figures");
 
 		List<int> figureNumbers = Enumerable.Range(1, resultFigureN).ToList();
-		
+		//should be in game manager, temporary fix
+		GameManager.Figures = new List<GameObject>();
 		for (int iteration = 1; iteration <= resultFigureN; iteration++)
 		{
 			var randomIndex = _rnd.Next(0, figureNumbers.Count);
@@ -46,6 +47,11 @@ public class FiguresGenerator : MonoBehaviour
 			MeshCollider collider = go.AddComponent<MeshCollider>();
 			
 			GenerateFigureMesh(go, figures, figureNumber);
+			
+			if (iteration == 1)
+			{
+				highestY = y + collider.bounds.size.y;
+			}
 
 			go.transform.position = GetNextPosition(collider, figureNumber, ref x, ref y, ref highestX, ref highestY);
 			
@@ -148,7 +154,7 @@ public class FiguresGenerator : MonoBehaviour
 			}
 		}
 
-		var vector = new Vector3(x, y, 0f);
+		var vector = new Vector3(x, y, -0.01f);
 		x += cx;
 		return vector;
 	}
