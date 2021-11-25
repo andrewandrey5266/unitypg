@@ -36,39 +36,11 @@ public class FiguresGenerator : MonoBehaviour
 			int randomI = _rnd.Next(0, colorNs.Count);
 			renderer.material = mats[colorNs[randomI]];
 			colorNs.RemoveAt(randomI);
-			var collider = go.AddComponent<MeshCollider>();
+			MeshCollider collider = go.AddComponent<MeshCollider>();
 			
 			GenerateFigureMesh(go, figures, i);
 
-			var cx = collider.bounds.size.x;
-			var cy = collider.bounds.size.y;
-			
-			if (i == 1)
-			{
-				highestY = y + cy;
-			}
-
-			if (x + cx <= highestX)
-			{
-				if (highestY < y + cy)
-				{
-					highestY = y + cy;
-				}
-			}
-			else
-			{
-				x = -2;
-				y = highestY;
-				
-				if (highestY < y + cy)
-				{
-					highestY = y + cy;
-				}
-			}
-			
-			go.transform.position = new Vector3(x, y, -0.01f);
-			
-			x += cx;
+			go.transform.position = GetNextPosition(collider, i, ref x, ref y, ref highestX, ref highestY);
 			
 			go.transform.parent = figuresParent.transform;
 		}
@@ -138,6 +110,39 @@ public class FiguresGenerator : MonoBehaviour
 
 		gameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
+
+	public Vector3 GetNextPosition(MeshCollider collider, int i, ref float x, ref float y, ref float highestX, ref float highestY)
+	{
+		float cx = collider.bounds.size.x;
+		float cy = collider.bounds.size.y;
+			
+		if (i == 1)
+		{
+			highestY = y + cy;
+		}
+
+		if (x + cx <= highestX)
+		{
+			if (highestY < y + cy)
+			{
+				highestY = y + cy;
+			}
+		}
+		else
+		{
+			x = -2;
+			y = highestY;
+				
+			if (highestY < y + cy)
+			{
+				highestY = y + cy;
+			}
+		}
+
+		var vector = new Vector3(x, y, -0.01f);
+		x += cx;
+		return vector;
+	}
 	
 	public void Shuffle<T>(IList<T> list)  
 	{  
@@ -150,4 +155,6 @@ public class FiguresGenerator : MonoBehaviour
 			list[n] = value;  
 		}  
 	}
+	
+	
 }

@@ -6,10 +6,7 @@ public class ButtonHandler : MonoBehaviour
 {
     public void Generate()
     {
-        Resources
-            .FindObjectsOfTypeAll<Text>()
-            .First(x => x.CompareTag($"levelCompletedText"))
-            .gameObject.SetActive(false);
+        GameManager.LevelCompletedText.SetActive(false);
 
         gameObject.SetActive(false);
         

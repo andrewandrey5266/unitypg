@@ -13,7 +13,7 @@ public class FigureHandler : MonoBehaviour
     const int LowerBoundX = -2;
     const int HigherBoundX = 6;
     const int LowerBoundY = -6;
-    const int HigherBoundY = 10;
+    const int HigherBoundY = 9;
 
     private Vector3 mOffset;
     private float mZCoord;
@@ -57,15 +57,9 @@ public class FigureHandler : MonoBehaviour
         GameManager.TrackProgress();
         if (IsLevelCompleted())
         {
-            Resources
-                .FindObjectsOfTypeAll<Text>()
-                .First(x => x.CompareTag($"levelCompletedText"))
-                .gameObject.SetActive(true);
+            GameManager.LevelCompletedText.SetActive(true);
    
-            Resources
-                .FindObjectsOfTypeAll<Button>()
-                .First(x => x.CompareTag($"generateLevelButton"))
-                .gameObject.SetActive(true);
+            GameManager.NextLevelButton.SetActive(true);
             
             GameManager.LevelCompletedAudio.Play(0);
             GameManager.CompleteLevel();

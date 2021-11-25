@@ -30,11 +30,26 @@ public class GameManager : MonoBehaviour
 
 	 public static GameObject Menu;
 	 public static GameObject HomeButton;
+	 public static GameObject NextLevelButton;
+	 public static GameObject LevelCompletedText;
+
+	 public static GameObject SoundOnButton;
+	 public static GameObject SoundOffButton;
+	 public static bool SoundOn = true;
+
 	
 	public void Start()
 	{
 		HomeButton = GameObject.FindWithTag("homeButton");
+		NextLevelButton = GameObject.FindWithTag("generateLevelButton");
+		LevelCompletedText = GameObject.FindWithTag("levelCompletedText");
+		SoundOnButton = GameObject.FindWithTag("soundOnButton");
+		SoundOffButton = GameObject.FindWithTag("soundOffButton");
+		
+		SoundOffButton.SetActive(false);
+		NextLevelButton.SetActive(false);
 		HomeButton.SetActive(false);
+		LevelCompletedText.SetActive(false);
 		
 		LevelCompletedAudio = GameObject.FindWithTag("levelCompletedAudio").GetComponent<AudioSource>();
 		FigureUpAudio = GameObject.FindWithTag("figureUpAudio").GetComponent<AudioSource>();
@@ -142,4 +157,5 @@ public class GameManager : MonoBehaviour
 		public static int MinSize = 3;
 		public static int MaxSize = 10;
 	}
+	
 }
