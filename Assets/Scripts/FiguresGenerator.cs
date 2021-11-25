@@ -24,11 +24,18 @@ public class FiguresGenerator : MonoBehaviour
 			DestroyImmediate(oldGo);
 		}
 
-		float  x = -2, y = -6, highestX = 6, highestY = 0;
+		float  x = -2, y = -6, highestX = 6, highestY = -10;
 		var figuresParent = GameObject.Find("Figures");
-		for (int i = 1; i <= resultFigureN; i++)
+
+		List<int> figureNumbers = Enumerable.Range(1, resultFigureN).ToList();
+		
+		for (int iteration = 1; iteration <= resultFigureN; iteration++)
 		{
-			var go = new GameObject($"Figure{i}");
+			var randomIndex = _rnd.Next(0, figureNumbers.Count);
+			int figureNumber = figureNumbers[randomIndex];
+			figureNumbers.RemoveAt(randomIndex);
+			
+			var go = new GameObject($"Figure{figureNumber}");
 			go.AddComponent<MeshFilter>();
 			var renderer = go.AddComponent<MeshRenderer>();
 			go.AddComponent<FigureHandler>();
@@ -38,11 +45,13 @@ public class FiguresGenerator : MonoBehaviour
 			colorNs.RemoveAt(randomI);
 			MeshCollider collider = go.AddComponent<MeshCollider>();
 			
-			GenerateFigureMesh(go, figures, i);
+			GenerateFigureMesh(go, figures, figureNumber);
 
-			go.transform.position = GetNextPosition(collider, i, ref x, ref y, ref highestX, ref highestY);
+			go.transform.position = GetNextPosition(collider, figureNumber, ref x, ref y, ref highestX, ref highestY);
 			
 			go.transform.parent = figuresParent.transform;
+			
+			GameManager.Figures.Add(go);
 		}
 	}
 	
@@ -139,7 +148,7 @@ public class FiguresGenerator : MonoBehaviour
 			}
 		}
 
-		var vector = new Vector3(x, y, -0.01f);
+		var vector = new Vector3(x, y, 0f);
 		x += cx;
 		return vector;
 	}

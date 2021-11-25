@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,7 +38,8 @@ public class GameManager : MonoBehaviour
 	 public static GameObject SoundOffButton;
 	 public static bool SoundOn = true;
 
-	
+	 public static List<GameObject> Figures = new List<GameObject>();
+
 	public void Start()
 	{
 		HomeButton = GameObject.FindWithTag("homeButton");
@@ -70,7 +72,6 @@ public class GameManager : MonoBehaviour
 
 	public static void StartLevel()
 	{
-		FigureHandler.ResetZ();
 		NumberOfMoves = 0;
 		LevelStartTime = DateTime.Now;
 		TrackProgress();

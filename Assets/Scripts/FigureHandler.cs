@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class FigureHandler : MonoBehaviour
 {
-    private static float ZStep = -0.005f;
-    private static float _highestZ = ZStep * 1;
-    public static void ResetZ() => _highestZ = ZStep * 1;
+    private static float ZStep = -0.001f;
     
     //#hardcode
     const int LowerBoundX = -2;
@@ -46,12 +44,11 @@ public class FigureHandler : MonoBehaviour
         //ButtonHandler.FigureDownAudio.Play(0);
         Vector3 roughVector = GetMouseAsWorldPoint() + mOffset;
 
-        _highestZ += ZStep;
-        
-        float x =  (float)Math.Round(roughVector.x);
-        float y =   (float)Math.Round(roughVector.y);
+        float x = (float)Math.Round(roughVector.x);
+        float y = (float)Math.Round(roughVector.y);
 
-        transform.position = GetBoundedPosition(new Vector3(x, y, _highestZ));
+        transform.position = GetBoundedPosition(new Vector3(x, y, ZStep * 10));
+        RearrangeFigures();
             
         GameManager.NumberOfMoves++;
         GameManager.TrackProgress();
@@ -142,5 +139,15 @@ public class FigureHandler : MonoBehaviour
                     : HigherBoundY - size.y 
                 : LowerBoundY,
             position.z);
+    }
+
+    private void RearrangeFigures()
+    {
+        var orderedFigures = GameManager.Figures.OrderByDescending(x => x.transform.position.z).ToList();
+        for (int i = 0; i < orderedFigures.Count; i++)
+        {
+            var position = orderedFigures[i].transform.position;
+            orderedFigures[i].transform.position = new Vector3(position.x, position.y, ZStep * (i + 2));
+        }
     }
 }
