@@ -24,7 +24,7 @@ public class FiguresGenerator : MonoBehaviour
 			DestroyImmediate(oldGo);
 		}
 
-		float  x = -2, y = -6, highestX = 6, highestY = -10;
+		float  x = -2, highestX = 6, y = -6,  highestY = float.MinValue;
 		var figuresParent = GameObject.Find("Figures");
 
 		List<int> figureNumbers = Enumerable.Range(1, resultFigureN).ToList();
@@ -128,48 +128,22 @@ public class FiguresGenerator : MonoBehaviour
 
 	public Vector3 GetNextPosition(MeshCollider collider, int i, ref float x, ref float y, ref float highestX, ref float highestY)
 	{
-		float cx = collider.bounds.size.x;
-		float cy = collider.bounds.size.y;
+		float width = collider.bounds.size.x;
+		float height = collider.bounds.size.y;
 			
-		if (i == 1)
-		{
-			highestY = y + cy;
-		}
-
-		if (x + cx <= highestX)
-		{
-			if (highestY < y + cy)
-			{
-				highestY = y + cy;
-			}
-		}
-		else
+		if(x + width > highestX)
 		{
 			x = -2;
 			y = highestY;
-				
-			if (highestY < y + cy)
-			{
-				highestY = y + cy;
-			}
+		}
+		
+		if (highestY < y + height)
+		{
+			highestY = y + height;
 		}
 
 		var vector = new Vector3(x, y, -0.01f);
-		x += cx;
+		x += width;
 		return vector;
 	}
-	
-	public void Shuffle<T>(IList<T> list)  
-	{  
-		int n = list.Count;  
-		while (n > 1) {  
-			n--;  
-			int k = _rnd.Next(n + 1);  
-			T value = list[k];  
-			list[k] = list[n];  
-			list[n] = value;  
-		}  
-	}
-	
-	
 }

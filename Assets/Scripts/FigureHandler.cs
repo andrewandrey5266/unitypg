@@ -50,7 +50,7 @@ public class FigureHandler : MonoBehaviour
         transform.position = GetBoundedPosition(new Vector3(x, y, - ZStep * 10));
         GameManager.NumberOfMoves++;
         GameManager.TrackProgress();
-        if (IsLevelCompleted())
+        if (GameManager.CheckLevelCompleted())
         {
             GameManager.LevelCompletedText.SetActive(true);
    
@@ -84,46 +84,7 @@ public class FigureHandler : MonoBehaviour
         return FindObjectOfType<Camera>().ScreenToWorldPoint(mousePoint);
     }
 
-    private bool IsLevelCompleted()
-    {
-        string backgroundAreaTagName = "backgroundArea";
-        var backgroundArea = GameObject.FindWithTag(backgroundAreaTagName);
-        if (backgroundArea != null)
-        {
-            var scale = backgroundArea.transform.localScale;
-            var position = backgroundArea.transform.position;
-
-            float startX =  position.x - scale.x / 2;
-            float startY =  position.y - scale.y / 2;
-            float endX =  startX + scale.x;
-            float endY =  startY + scale.y;
-
-            float sizeOfSquare = 1f;
-            float stepOffset = 0.5f;
-
-            for (float y = startY; y < endY; y += sizeOfSquare)
-            {
-                for (float x = startX; x < endX; x += sizeOfSquare)
-                {
-                    Vector3 rayCastPosition = new Vector3(x + stepOffset, y + stepOffset, -2.5f);
-                    if (Physics.Raycast(rayCastPosition, Vector3.forward, out RaycastHit hit, 5.0f))
-                    {
-                        if (hit.collider.gameObject.CompareTag(backgroundAreaTagName))
-                        {
-                            return false;
-                        }
-                    }
-                    //Debug.Log($"point {rayCastPosition.x}, {rayCastPosition.y} - {hitName}");
-                }
-            }
-
-            return true;
-        }
-
-        //Debug.Log("background area not found");
-
-        return false;
-    }
+  
 
     private Vector3 GetBoundedPosition(Vector3 position)
     {

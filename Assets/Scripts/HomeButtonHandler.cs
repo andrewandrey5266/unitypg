@@ -9,12 +9,13 @@ public class HomeButtonHandler : MonoBehaviour
         gameObject.SetActive(false);
         GameManager.NextLevelButton.SetActive(false);
         GameManager.LevelCompletedText.SetActive(false);
+        GameManager.FilledPercentage.SetActive(false);
+
         GameManager.Menu.SetActive(true);
     }
 
     public void HandleSoundButtonClick()
     {
-        
         GameManager.SoundOn = !GameManager.SoundOn;
         AudioListener.volume = Convert.ToSingle(GameManager.SoundOn);
         GameManager.SoundOnButton.SetActive(GameManager.SoundOn);

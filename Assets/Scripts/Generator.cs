@@ -8,13 +8,14 @@ static class Generator
     public static int[,] GetPuzzle(int xlength, int ylength, int figureN, int minSize, int maxSize, out int resultFigureN)
     {
         resultFigureN = figureN;
-        for (int I = 0; I < 100; I++)
+        int figureI;
+        for (int I = 0; I < 1000; I++)
         {
             bool failedToBuild = false;
 
             int[,] area = new int[ylength, xlength];
 
-            for (int figureI = 1; figureI <= figureN; figureI++)
+            for (figureI = 1; figureI <= figureN; figureI++)
             {
                 if(!SearchEmptySpot(area, out int y, out int x))
                 {
@@ -25,6 +26,7 @@ static class Generator
 
                 int figureSize = rnd.Next(minSize, maxSize + 1);
 
+                //we start from i = 2, because in code below we found empty spot, and put first block there
                 for (int i = 2; i <= figureSize; i++)
                 {
                     if (GetNewYX(area, x, y, out (int, int) yx))
@@ -36,10 +38,12 @@ static class Generator
                     }
                     else
                     {
-                        if(i == 2)
+                        //if spot not found and figure that was build is less then min size, we fail this iteration
+                        if(i - 1 < minSize)
                         {
                             failedToBuild = true;
                         }
+                        //if figure size is >= minSize, we start to build another figure
                         break;
                     }
                 }
@@ -52,6 +56,7 @@ static class Generator
 
             if (!failedToBuild)
             {
+                //if there's empty spot, we fail this iteration, and start from beginning
                 foreach (var c in area)
                 {
                     if (c == 0)
@@ -62,7 +67,7 @@ static class Generator
                 }
             }
 
-            if (failedToBuild)
+            if (failedToBuild || GameManager.Settings.ExactAmountOfFigures &&  figureI < figureN)
             {
                 continue;
             }
