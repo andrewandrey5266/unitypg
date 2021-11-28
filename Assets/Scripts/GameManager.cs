@@ -10,11 +10,11 @@ public class GameManager : MonoBehaviour
 	{
 		public static int Xlength; 
 		public static int Ylength;
-		public static int FigureN = 9;
 		public static int MinSize = 2;
-		public static int MaxSize = 15;
 
-		public static bool ExactAmountOfFigures = false;
+		public static int FigureN = 9;
+		public static int MaxSize = 15;
+		public static bool ExactAmountOfFigures;
 	}
 	
 	public static int NumberOfMoves = 0;
@@ -28,15 +28,6 @@ public class GameManager : MonoBehaviour
 	public static AudioSource ButtonClickAudio;
 	public static Text GameProgressText;
 
-	static bool IsEasy() {return Settings.MaxSize == 10; }
-	static bool IsHard() {return Settings.MaxSize == 9; }
-	static bool IsExpert() {return Settings.MaxSize == 8; }
-	public static void DoEasy() { Settings.MaxSize = 10; }
-	public static void DoHard() { Settings.MaxSize = 9; }
-	public static void DoExpert() { Settings.MaxSize = 6; }
-
-	public static bool IsLevelHardnessAdjustable = true;
-	
 	 static bool _levelCompleted;
 	 public static bool IsLevelCompleted => _levelCompleted;
 
@@ -53,6 +44,8 @@ public class GameManager : MonoBehaviour
 	 public static bool SoundOn = true;
 
 	 public static List<GameObject> Figures = new List<GameObject>();
+	 
+	 public static int Level;
 
 	public void Start()
 	{
@@ -83,14 +76,13 @@ public class GameManager : MonoBehaviour
 		Menu = GameObject.FindWithTag("menu");
 
 		PuzzlesSolved = PlayerPrefs.GetInt(nameof(PuzzlesSolved));
-		var maxSize = PlayerPrefs.GetInt(nameof(Settings.MaxSize));
-		if (maxSize > 0)
-		{
-			Settings.MaxSize = maxSize;
-		}
+		Level = PlayerPrefs.GetInt(nameof(Level));
 		
 		//trying to disable multitouch here, to omit figure drawing but
 		Input.multiTouchEnabled = false;
+
+		AdjustLevelSettings();
+		ArrowMovement.LoadSavedLevel();
 	}
 	
 	public static void StartLevel()
@@ -98,7 +90,6 @@ public class GameManager : MonoBehaviour
 		FilledPercentage.GetComponent<Text>().text = "Area filled 0%";
 		NumberOfMoves = 0;
 		LevelStartTime = DateTime.Now;
-		TrackProgress();
 		_levelCompleted = false;
 	}
 	
@@ -106,74 +97,46 @@ public class GameManager : MonoBehaviour
 	{
 		PuzzlesSolved++;
 		_levelCompleted = true;
-		TrackProgress();
 
-		var timeSpent = (DateTime.Now - LevelStartTime);
-		var hhmmss = $"{timeSpent.Hours}:{timeSpent.Minutes}:{timeSpent.Seconds}";
-		
-		if (timeSpent.Days > 1)
-		{
-			hhmmss = $"{timeSpent.Days} day(s)";
-		}
-
-		AdjustHardnessLevel(timeSpent);
-
-		PlayerPrefs.SetInt(nameof(Settings.MaxSize), Settings.MaxSize);
 		PlayerPrefs.SetInt(nameof(PuzzlesSolved), PuzzlesSolved);
 		PlayerPrefs.Save();
 	}
 
-	private static void AdjustHardnessLevel(TimeSpan timeSpent)
+	public static void AdjustLevelSettings()
 	{
-		if (!IsLevelHardnessAdjustable)
+		if (Level == 0)
 		{
-			return;
+			Settings.MaxSize = 15;
+			Settings.FigureN = 4;
+			Settings.ExactAmountOfFigures = true;
 		}
-		if (PuzzlesSolved >= 17)
+		if (Level == 1)
 		{
-			if (timeSpent.TotalSeconds > 60)
-			{
-				if (IsExpert())
-				{
-					DoHard();
-				}else if (IsHard())
-				{
-					DoEasy();
-				}
-
-				LevelHardnessValue--;
-			}
-			else
-			{
-				if (IsEasy())
-				{
-					DoHard();
-					LevelHardnessValue++;
-				}
-				else if (LevelHardnessValue == 5)
-				{
-					DoExpert();
-				}
-			}
+			Settings.MaxSize = 8;
+			Settings.FigureN = 5;
+			Settings.ExactAmountOfFigures = true;
 		}
-		else if (PuzzlesSolved >= 15)
+		if (Level == 2)
 		{
-			DoExpert();
+			Settings.MaxSize = 5;
+			Settings.FigureN = 7;
+			Settings.ExactAmountOfFigures = true;
 		}
-		else if (PuzzlesSolved >= 5)
+		if (Level == 3)
 		{
-			DoHard();
+			Settings.MaxSize = 5;
+			Settings.FigureN = 9;
+			Settings.ExactAmountOfFigures = true;
 		}
 	}
-
-	public static void TrackProgress()
+	public static void SaveLevelHardness()
 	{
-		//expert -3, hard - 2, easy - 1
-		var level = 11 - Settings.MaxSize;
-		GameProgressText.text =
-			""; //$"puzzles solved: {PuzzlesSolved}, current moves: {NumberOfMoves}, l:{level}, c:{levelHardnessChangability}";
+		PlayerPrefs.SetInt(nameof(Level), Level);
+		PlayerPrefs.Save();
+
+		AdjustLevelSettings();
 	}
-	
+
 	public static bool CheckLevelCompleted()
 	{
 		if (BackgroundArea != null)

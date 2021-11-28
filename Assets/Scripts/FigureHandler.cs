@@ -49,7 +49,6 @@ public class FigureHandler : MonoBehaviour
 
         transform.position = GetBoundedPosition(new Vector3(x, y, - ZStep * 10));
         GameManager.NumberOfMoves++;
-        GameManager.TrackProgress();
         if (GameManager.CheckLevelCompleted())
         {
             GameManager.LevelCompletedText.SetActive(true);

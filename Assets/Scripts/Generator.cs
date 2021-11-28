@@ -67,7 +67,7 @@ static class Generator
                 }
             }
 
-            if (failedToBuild || GameManager.Settings.ExactAmountOfFigures &&  figureI < figureN)
+            if (failedToBuild || GameManager.Settings.ExactAmountOfFigures &&  figureI != figureN)
             {
                 continue;
             }

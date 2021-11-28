@@ -20,15 +20,6 @@ public class ButtonHandler : MonoBehaviour
 
     public void GenerateRegular()
     {
-        GameManager.IsLevelHardnessAdjustable = false;
-        GameManager.DoEasy();
-        MenuButtonBase();
-    }
-
-    public void GenerateHard()
-    {
-        GameManager.IsLevelHardnessAdjustable = false;
-        GameManager.DoExpert();
         MenuButtonBase();
     }
 

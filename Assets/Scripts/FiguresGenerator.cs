@@ -18,7 +18,7 @@ public class FiguresGenerator : MonoBehaviour
 			GameManager.Settings.MinSize,
 			GameManager.Settings.MaxSize, out int resultFigureN);
 
-		for (int i = 1; i <= GameManager.Settings.FigureN; i++)
+		for (int i = 1; i <= 10; i++)
 		{
 			var oldGo = GameObject.Find($"Figure{i}");
 			DestroyImmediate(oldGo);
