@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
 	
 	public static void StartLevel()
 	{
-		FilledPercentage.GetComponent<Text>().text = "Area filled by: 0 %";
+		FilledPercentage.GetComponent<Text>().text = "Area filled 0%";
 		NumberOfMoves = 0;
 		LevelStartTime = DateTime.Now;
 		TrackProgress();
@@ -214,7 +214,7 @@ public class GameManager : MonoBehaviour
 			if (filled + notFilled > 0)
 			{
 				int percentage = filled * 100 / (filled + notFilled);
-				FilledPercentage.GetComponent<Text>().text = $"Area filled by: {percentage} %";
+				FilledPercentage.GetComponent<Text>().text = $"Area filled {percentage}%";
 			}
 
 			return notFilled <= 0;
