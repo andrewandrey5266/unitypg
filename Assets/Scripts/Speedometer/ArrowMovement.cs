@@ -15,8 +15,9 @@ public class ArrowMovement : MonoBehaviour
    public void Start()
    {
       _arrowTransform = GameObject.FindWithTag("tabloArrow").GetComponent<Transform>();
-      _arrowTransform.rotation = Quaternion.Euler(0, 0, _levelAngles[GM.Level]);
       _levelText = GameObject.FindWithTag("tabloText").GetComponent<Text>();
+      
+      LoadSavedLevel();
    }
 
    public void ChangeLevel()
@@ -51,13 +52,14 @@ public class ArrowMovement : MonoBehaviour
             return;
          }
          Vector3 direction = clockWise ? Vector3.back : Vector3.forward;
-         
-         _arrowTransform.Rotate(direction, 1.5f);
+         float angle = clockWise ? 1.5f : 3.0f;
+         _arrowTransform.Rotate(direction, angle);
       }
    }
-   
-   public static void LoadSavedLevel(){
-      _arrowTransform.rotation = Quaternion.Euler(0,0, _levelAngles[GM.Level]);
+
+   public static void LoadSavedLevel()
+   {
+      _arrowTransform.rotation = Quaternion.Euler(0, 0, _levelAngles[GM.Level]);
       _levelText.text = _levelTexts[GM.Level];
    }
 }

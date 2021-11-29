@@ -82,12 +82,11 @@ public class GameManager : MonoBehaviour
 		Input.multiTouchEnabled = false;
 
 		AdjustLevelSettings();
-		ArrowMovement.LoadSavedLevel();
 	}
 	
 	public static void StartLevel()
 	{
-		FilledPercentage.GetComponent<Text>().text = "Area filled 0%";
+		FilledPercentage.GetComponent<Text>().text = "a r e a  f i l l e d  0%";
 		NumberOfMoves = 0;
 		LevelStartTime = DateTime.Now;
 		_levelCompleted = false;
@@ -177,7 +176,7 @@ public class GameManager : MonoBehaviour
 			if (filled + notFilled > 0)
 			{
 				int percentage = filled * 100 / (filled + notFilled);
-				FilledPercentage.GetComponent<Text>().text = $"Area filled {percentage}%";
+				FilledPercentage.GetComponent<Text>().text = $"a r e a  f i l l e d  {percentage}%";
 			}
 
 			return notFilled <= 0;
