@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using Settings = GameManager.Settings;
 public class FiguresGenerator : MonoBehaviour
 {
 	private readonly System.Random _rnd = new System.Random();
@@ -12,11 +12,11 @@ public class FiguresGenerator : MonoBehaviour
 		List<int> colorNs = Enumerable.Range(0, mats.Length).ToList();
 
 		int[,] figures = Generator.GetPuzzle(
-			GameManager.Settings.Xlength,
-			GameManager.Settings.Ylength,
-			GameManager.Settings.FigureN,
-			GameManager.Settings.MinSize,
-			GameManager.Settings.MaxSize, out int resultFigureN);
+			Settings.Xlength,
+			Settings.Ylength,
+			Settings.FigureN,
+			Settings.MinSize,
+			Settings.MaxSize, out int resultFigureN);
 
 		for (int i = 1; i <= 10; i++)
 		{
@@ -24,7 +24,10 @@ public class FiguresGenerator : MonoBehaviour
 			DestroyImmediate(oldGo);
 		}
 
-		float  x = -2, highestX = 6, y = -6,  highestY = float.MinValue;
+		float x = Settings.Bounds.MinX,
+			highestX = Settings.Bounds.MaxX,
+			y = Settings.Bounds.MinY,
+			highestY = float.MinValue;
 		var figuresParent = GameObject.Find("Figures");
 
 		List<int> figureNumbers = Enumerable.Range(1, resultFigureN).ToList();

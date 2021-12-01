@@ -8,13 +8,15 @@ public class GameManager : MonoBehaviour
 {
 	public static class Settings
 	{
-		public static int Xlength; 
-		public static int Ylength;
-		public static int MinSize = 2;
+		public static int Xlength = 6; 
+		public static int Ylength = 4;
+		public static int MinSize = 2;	
 
 		public static int FigureN = 9;
 		public static int MaxSize = 15;
-		public static bool ExactAmountOfFigures;
+		public static bool ExactAmountOfFigures = true;
+
+		public static Bounds Bounds;
 	}
 	
 	public static int NumberOfMoves = 0;
@@ -69,9 +71,7 @@ public class GameManager : MonoBehaviour
 		GameProgressText = GameObject.FindWithTag("gameProgress").GetComponent<Text>();
 		BackgroundArea = GameObject.FindWithTag("backgroundArea");
 
-		var backgroundSize = BackgroundArea.transform.localScale;
-		Settings.Xlength = (int) backgroundSize.x;
-		Settings.Ylength = (int) backgroundSize.y;
+		BackgroundArea.transform.localScale = new Vector3(Settings.Xlength, Settings.Ylength, 1);
 
 		Menu = GameObject.FindWithTag("menu");
 
@@ -90,6 +90,8 @@ public class GameManager : MonoBehaviour
 		NumberOfMoves = 0;
 		LevelStartTime = DateTime.Now;
 		_levelCompleted = false;
+		BackgroundArea.transform.localScale = new Vector3(Settings.Xlength, Settings.Ylength, 1);
+
 	}
 	
 	public static void CompleteLevel()
@@ -103,29 +105,41 @@ public class GameManager : MonoBehaviour
 
 	public static void AdjustLevelSettings()
 	{
-		if (Level == 0)
+		if (Level < 3)
 		{
-			Settings.MaxSize = 15;
-			Settings.FigureN = 4;
-			Settings.ExactAmountOfFigures = true;
+			Settings.Xlength = 6;
+			Settings.Ylength = 4;
+			Settings.Bounds = Bounds.GetCloser();
+			FindObjectOfType<Camera>().transform.localPosition = new Vector3(0, 0, -15);
+			BackgroundArea.transform.position = new Vector3(2,2f, 0.01f);
+
+			if (Level == 0)
+			{
+				Settings.MaxSize = 15;
+				Settings.FigureN = 4;
+			}
+			if (Level == 1)
+			{
+				Settings.MaxSize = 8;
+				Settings.FigureN = 5;
+
+			}
+			if (Level == 2)
+			{
+				Settings.MaxSize = 5;
+				Settings.FigureN = 7;
+			}
 		}
-		if (Level == 1)
+		else if (Level == 3)
 		{
-			Settings.MaxSize = 8;
-			Settings.FigureN = 5;
-			Settings.ExactAmountOfFigures = true;
-		}
-		if (Level == 2)
-		{
-			Settings.MaxSize = 5;
-			Settings.FigureN = 7;
-			Settings.ExactAmountOfFigures = true;
-		}
-		if (Level == 3)
-		{
-			Settings.MaxSize = 5;
-			Settings.FigureN = 9;
-			Settings.ExactAmountOfFigures = true;
+			Settings.Xlength = 8;
+			Settings.Ylength = 7;
+			BackgroundArea.transform.position = new Vector3(2,2.5f, 0.01f);
+			
+			Settings.MaxSize = 9;
+			Settings.FigureN = 10;
+			Settings.Bounds = Bounds.GetFar();
+			FindObjectOfType<Camera>().transform.localPosition = new Vector3(0, 0, -23);
 		}
 	}
 	public static void SaveLevelHardness()
@@ -152,7 +166,6 @@ public class GameManager : MonoBehaviour
 			float stepOffset = 0.5f;
 
 			int filled = 0, notFilled = 0;
-            
 
 			for (float y = startY; y < endY; y += sizeOfSquare)
 			{
