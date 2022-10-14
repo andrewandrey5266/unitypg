@@ -23,6 +23,16 @@ public class ButtonHandler : MonoBehaviour
         MenuButtonBase();
     }
 
+    public void CompletedPuzzlesButtonHandler()
+    {
+        GameManager.ButtonClickAudio.Play(0);
+        GameManager.Menu.SetActive(false);
+        GameManager.CompletedPuzzlesMenu.SetActive(true);
+        
+        GameManager.HomeButton.SetActive(true);
+
+    }
+
     private void MenuButtonBase()
     {
         GameManager.ButtonClickAudio.Play(0);

@@ -11,6 +11,7 @@ public class HomeButtonHandler : MonoBehaviour
         GameManager.LevelCompletedText.SetActive(false);
         GameManager.FilledPercentage.SetActive(false);
 
+        GameManager.CompletedPuzzlesMenu.SetActive(false);
         GameManager.Menu.SetActive(true);
     }
 

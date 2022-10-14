@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
 		public static Bounds Bounds;
 	}
 	
-	public static int NumberOfMoves = 0;
 	public static int PuzzlesSolved = 0;
 	public static DateTime LevelStartTime;
 
@@ -28,12 +27,13 @@ public class GameManager : MonoBehaviour
 	public static AudioSource FigureUpAudio;
 	public static AudioSource FigureDownAudio;
 	public static AudioSource ButtonClickAudio;
-	public static Text GameProgressText;
 
 	 static bool _levelCompleted;
 	 public static bool IsLevelCompleted => _levelCompleted;
 
 	 public static GameObject Menu;
+	 public static GameObject CompletedPuzzlesMenu;
+
 	 public static GameObject HomeButton;
 	 public static GameObject NextLevelButton;
 	 public static GameObject LevelCompletedText;
@@ -51,29 +51,30 @@ public class GameManager : MonoBehaviour
 
 	public void Start()
 	{
+		Menu = GameObject.FindWithTag("menu");
+
 		HomeButton = GameObject.FindWithTag("homeButton");
 		NextLevelButton = GameObject.FindWithTag("generateLevelButton");
 		LevelCompletedText = GameObject.FindWithTag("levelCompletedText");
 		SoundOnButton = GameObject.FindWithTag("soundOnButton");
 		SoundOffButton = GameObject.FindWithTag("soundOffButton");
 		FilledPercentage = GameObject.FindWithTag("filledPercentage");
+		CompletedPuzzlesMenu = GameObject.FindWithTag("completedPuzzlesMenu");
 
 		SoundOffButton.SetActive(false);
 		NextLevelButton.SetActive(false);
 		HomeButton.SetActive(false);
 		LevelCompletedText.SetActive(false);
 		FilledPercentage.SetActive(false);
-		
+		CompletedPuzzlesMenu.SetActive(false);
+
 		LevelCompletedAudio = GameObject.FindWithTag("levelCompletedAudio").GetComponent<AudioSource>();
 		FigureUpAudio = GameObject.FindWithTag("figureUpAudio").GetComponent<AudioSource>();
 		FigureDownAudio = GameObject.FindWithTag("figureDownAudio").GetComponent<AudioSource>();
 		ButtonClickAudio = GameObject.FindWithTag("buttonClickAudio").GetComponent<AudioSource>();
-		GameProgressText = GameObject.FindWithTag("gameProgress").GetComponent<Text>();
 		BackgroundArea = GameObject.FindWithTag("backgroundArea");
 
 		BackgroundArea.transform.localScale = new Vector3(Settings.Xlength, Settings.Ylength, 1);
-
-		Menu = GameObject.FindWithTag("menu");
 
 		PuzzlesSolved = PlayerPrefs.GetInt(nameof(PuzzlesSolved));
 		Level = PlayerPrefs.GetInt(nameof(Level));
@@ -87,11 +88,9 @@ public class GameManager : MonoBehaviour
 	public static void StartLevel()
 	{
 		FilledPercentage.GetComponent<Text>().text = "a r e a  f i l l e d  0%";
-		NumberOfMoves = 0;
 		LevelStartTime = DateTime.Now;
 		_levelCompleted = false;
 		BackgroundArea.transform.localScale = new Vector3(Settings.Xlength, Settings.Ylength, 1);
-
 	}
 	
 	public static void CompleteLevel()
