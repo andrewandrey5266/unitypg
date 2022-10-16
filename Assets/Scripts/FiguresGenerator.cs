@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 using Settings = GameManager.Settings;
 public class FiguresGenerator : MonoBehaviour
@@ -8,29 +9,36 @@ public class FiguresGenerator : MonoBehaviour
 
 	public void Generate()
 	{
-		Material[] mats = Resources.LoadAll("Materials/FigureColors", typeof(Material)).Cast<Material>().ToArray();
-		List<int> colorNs = Enumerable.Range(0, mats.Length).ToList();
-
-		int[,] figures = Generator.GetPuzzle(
-			Settings.Xlength,
-			Settings.Ylength,
-			Settings.FigureN,
-			Settings.MinSize,
-			Settings.MaxSize, out int resultFigureN);
-
 		for (int i = 1; i <= 10; i++)
 		{
 			var oldGo = GameObject.Find($"Figure{i}");
 			DestroyImmediate(oldGo);
 		}
+		
+		int[,] figures = //JsonConvert.DeserializeObject<int[,]>("[[1,1,2,2,2,2],[1,1,2,2,3,2],[1,1,1,1,3,2],[1,1,1,1,3,2]]");
+		
+		Generator.GetPuzzle(
+			Settings.Xlength,
+			Settings.Ylength,
+			Settings.FigureN,
+			Settings.MinSize,
+			Settings.MaxSize, out int resultFigureN);
+		
+		GameManager.CurrentPuzzle = figures;
 
-		float x = Settings.Bounds.MinX,
-			highestX = Settings.Bounds.MaxX,
-			y = Settings.Bounds.MinY,
-			highestY = float.MinValue;
-		var figuresParent = GameObject.Find("Figures");
+		Debug.Log(JsonConvert.SerializeObject(figures));
 
+		float x = Settings.Bounds.MinX;
+		float y = Settings.Bounds.MinY;
+		float highestX = Settings.Bounds.MaxX;
+		float highestY = float.MinValue;
+		
+		GameObject figuresParent = GameObject.Find("Figures");
+
+		Material[] mats = Resources.LoadAll("Materials/FigureColors", typeof(Material)).Cast<Material>().ToArray();
+		List<int> colorNs = Enumerable.Range(0, mats.Length).ToList();
 		List<int> figureNumbers = Enumerable.Range(1, resultFigureN).ToList();
+		
 		//should be in game manager, temporary fix
 		GameManager.Figures = new List<GameObject>();
 		for (int iteration = 1; iteration <= resultFigureN; iteration++)
@@ -56,14 +64,43 @@ public class FiguresGenerator : MonoBehaviour
 				highestY = y + collider.bounds.size.y;
 			}
 
-			go.transform.position = GetNextPosition(collider, figureNumber, ref x, ref y, ref highestX, ref highestY);
+
+			var position = GetCorrectPosition(figures, figureNumber);
+			go.transform.position = position;
+				//GetNextPosition(collider, figureNumber, ref x, ref y, ref highestX, ref highestY);
 			
 			go.transform.parent = figuresParent.transform;
 			
 			GameManager.Figures.Add(go);
 		}
 	}
-	
+
+	private Vector3 GetCorrectPosition(int[,] figures, int i)
+	{
+		int minXIndex = int.MaxValue;
+		int minYIndex = int.MaxValue;
+		for (int y = 0; y < figures.GetLength(0); y++)
+		{
+			for (int x = 0; x < figures.GetLength(1); x++)
+			{
+				if (figures[y, x] == i)
+				{
+					if (x < minXIndex)
+					{
+						minXIndex = x;
+					}
+
+					if (y < minYIndex)
+					{
+						minYIndex = y;
+					}
+				}
+			}
+		}
+
+		return new Vector3(minXIndex, -minYIndex + Settings.Ylength, -0.01f);
+	}
+
 	private void GenerateFigureMesh(GameObject gameObject, int[,] figures, int i)
 	{
 		//figure out width, to set pivot offset, 
@@ -97,16 +134,16 @@ public class FiguresGenerator : MonoBehaviour
 				if (figures[y, x] == i)
 				{
 					float _x = x - minXIndex;
-					float _y = y - minYIndex;
+					float _y = - y + minYIndex - 1;
 					
 					verticesList.Add(new Vector3(_x, _y, 0));
 					verticesList.Add(new Vector3(_x + 1, _y, 0));
 					verticesList.Add(new Vector3(_x, _y + 1, 0));
 					verticesList.Add(new Vector3(_x + 1, _y + 1, 0));
 
-					int c = verticesList.Count - 4;
-					triangles.Add(new Vector3(c + 2, c + 1, c));
-					triangles.Add(new Vector3(c + 3, c + 1, c + 2));
+					int p0 = verticesList.Count - 4;
+					triangles.Add(new Vector3(p0 + 2, p0 + 1, p0));
+					triangles.Add(new Vector3(p0 + 3, p0 + 1, p0 + 2));
 				}
 			}
 		}
@@ -129,7 +166,7 @@ public class FiguresGenerator : MonoBehaviour
 		gameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
 	}
 
-	public Vector3 GetNextPosition(MeshCollider collider, int i, ref float x, ref float y, ref float highestX, ref float highestY)
+	private Vector3 GetNextPosition(MeshCollider collider, int i, ref float x, ref float y, ref float highestX, ref float highestY)
 	{
 		float width = collider.bounds.size.x;
 		float height = collider.bounds.size.y;

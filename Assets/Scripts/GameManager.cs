@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +9,7 @@ public class GameManager : MonoBehaviour
 	{
 		public static int Xlength = 6; 
 		public static int Ylength = 4;
-		public static int MinSize = 2;	
+		public static int MinSize = 2;
 
 		public static int FigureN = 9;
 		public static int MaxSize = 15;
@@ -19,7 +18,9 @@ public class GameManager : MonoBehaviour
 		public static Bounds Bounds;
 	}
 	
+	public static int NumberOfMoves = 0;
 	public static int PuzzlesSolved = 0;
+	public static int[,] CurrentPuzzle = null;
 	public static DateTime LevelStartTime;
 
 	public static int LevelHardnessValue;
@@ -90,6 +91,7 @@ public class GameManager : MonoBehaviour
 		FilledPercentage.GetComponent<Text>().text = "a r e a  f i l l e d  0%";
 		LevelStartTime = DateTime.Now;
 		_levelCompleted = false;
+		NumberOfMoves = 0;
 		BackgroundArea.transform.localScale = new Vector3(Settings.Xlength, Settings.Ylength, 1);
 	}
 	
@@ -99,6 +101,12 @@ public class GameManager : MonoBehaviour
 		_levelCompleted = true;
 
 		PlayerPrefs.SetInt(nameof(PuzzlesSolved), PuzzlesSolved);
+		
+		PlayerPrefs.SetString("game_progress", GameProgress.ComposeInfo(
+			PlayerPrefs.GetString("game_progress"), CurrentPuzzle, NumberOfMoves, DateTime.Now - LevelStartTime));
+		
+		PlayerPrefs.SetInt(nameof(PuzzlesSolved), PuzzlesSolved);
+
 		PlayerPrefs.Save();
 	}
 
@@ -110,7 +118,6 @@ public class GameManager : MonoBehaviour
 			Settings.Ylength = 4;
 			Settings.Bounds = Bounds.GetCloser();
 			FindObjectOfType<Camera>().transform.localPosition = new Vector3(0, 0, -15);
-			BackgroundArea.transform.position = new Vector3(2,2f, 0.01f);
 
 			if (Level == 0)
 			{
@@ -133,13 +140,14 @@ public class GameManager : MonoBehaviour
 		{
 			Settings.Xlength = 8;
 			Settings.Ylength = 7;
-			BackgroundArea.transform.position = new Vector3(2,2.5f, 0.01f);
 			
 			Settings.MaxSize = 9;
 			Settings.FigureN = 10;
 			Settings.Bounds = Bounds.GetFar();
 			FindObjectOfType<Camera>().transform.localPosition = new Vector3(0, 0, -23);
 		}
+		
+		BackgroundArea.transform.position = new Vector3(Settings.Xlength / 2f, Settings.Ylength / 2f, 0);
 	}
 	public static void SaveLevelHardness()
 	{

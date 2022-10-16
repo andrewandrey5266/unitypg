@@ -41,6 +41,8 @@ public class FigureHandler : MonoBehaviour
         float y = (float)Math.Round(roughVector.y);
 
         transform.position = GetBoundedPosition(new Vector3(x, y, - ZStep * 10));
+        GameManager.NumberOfMoves++;
+        
         if (GameManager.CheckLevelCompleted())
         {
             GameManager.LevelCompletedText.SetActive(true);

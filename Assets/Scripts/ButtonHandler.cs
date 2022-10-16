@@ -20,7 +20,13 @@ public class ButtonHandler : MonoBehaviour
 
     public void GenerateRegular()
     {
-        MenuButtonBase();
+        GameManager.ButtonClickAudio.Play(0);
+        GameManager.Menu.SetActive(false);
+        GameManager.FilledPercentage.SetActive(true);
+        GameManager.HomeButton.SetActive(true);
+        var script = GameObject.Find("Generator").GetComponent<FiguresGenerator>();
+        script.Generate();
+        GameManager.StartLevel();
     }
 
     public void CompletedPuzzlesButtonHandler()
@@ -31,16 +37,5 @@ public class ButtonHandler : MonoBehaviour
         
         GameManager.HomeButton.SetActive(true);
 
-    }
-
-    private void MenuButtonBase()
-    {
-        GameManager.ButtonClickAudio.Play(0);
-        GameManager.Menu.SetActive(false);
-        GameManager.FilledPercentage.SetActive(true);
-        GameManager.HomeButton.SetActive(true);
-        var script = GameObject.Find("Generator").GetComponent<FiguresGenerator>();
-        script.Generate();
-        GameManager.StartLevel();
     }
 }
